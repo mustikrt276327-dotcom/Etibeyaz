@@ -1,0 +1,32 @@
+name: Build ETIBEYAZ APK
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Buildozer Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsqlite3-dev gapc libffi-dev ssl-cert build-essential ffmpeg
+          pip3 install --user --upgrade buildozer cython virtualenv
+
+      - name: Build with Buildozer
+        run: |
+          export PATH=$PATH:~/.local/bin
+          buildozer android debug
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ETIBEYAZ-APK
+          path: bin/*.apk
+          
