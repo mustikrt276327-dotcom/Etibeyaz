@@ -3,7 +3,7 @@ on: [push, workflow_dispatch]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
@@ -16,17 +16,41 @@ jobs:
       - name: Install Buildozer Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libsqlite3-dev gapc libffi-dev ssl-cert build-essential ffmpeg
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            ccache \
+            git \
+            libffi-dev \
+            libssl-dev \
+            libsqlite3-dev \
+            libgstreamer1.0-dev \
+            gstreamer1.0-plugins-base \
+            gstreamer1.0-plugins-good \
+            libasound2-dev \
+            libsdl2-dev \
+            libsdl2-image-dev \
+            libsdl2-mixer-dev \
+            libsdl2-ttf-dev \
+            libportmidi-dev \
+            libswscale-dev \
+            libavformat-dev \
+            libavcodec-dev \
+            zlib1g-dev \
+            zip \
+            unzip \
+            openjdk-17-jdk \
+            cmake \
+            autoconf \
+            automake \
+            libtool \
+            pkg-config \
+            python3-dev \
+            python3-pip \
+            python3-setuptools
           pip3 install --user --upgrade buildozer cython virtualenv
 
       - name: Build with Buildozer
         run: |
           export PATH=$PATH:~/.local/bin
-          buildozer android debug
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ETIBEYAZ-APK
-          path: bin/*.apk
+          yes | buildozer android debug
           
